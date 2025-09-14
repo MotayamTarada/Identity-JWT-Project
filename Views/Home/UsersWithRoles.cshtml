@@ -1,0 +1,63 @@
+﻿@model IEnumerable<Identity_JWT_Project.Models.UserRolesVm>
+@{
+    ViewData["Title"] = "Users & Roles";
+    var allRoleNames = (IEnumerable<string>)ViewBag.RoleNames;
+}
+<h2>Users & Roles</h2>
+
+@if (TempData["Success"] is string s)
+{
+     <div class="alert alert-success">@s</div>
+}
+@if (TempData["Error"] is string e)
+{
+     <div class="alert alert-danger">@e</div>
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>UserName</th>
+            <th>Phone</th>
+            <th>Roles</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>@item.User.Email</td>
+                <td>@item.User.UserName</td>
+                <td>@item.User.PhoneNumber</td>
+                <td>
+                    @foreach (var roleName in allRoleNames)
+                    {
+                        var hasRole = item.UserRoles.Contains(roleName);
+                        if (hasRole)
+                        {
+                            <form asp-action="RemoveRoleFromUser" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="userId" value="@item.User.Id" />
+                                <input type="hidden" name="roleName" value="@roleName" />
+                                <br />
+                                <button class="btn btn-sm btn-success" type="submit">@roleName</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <form asp-action="AddRoleToUser" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="userId" value="@item.User.Id" />
+                                <input type="hidden" name="roleName" value="@roleName" />
+                                <br /> 
+                                <button class="btn btn-sm btn-outline-primary" type="submit">@roleName</button>
+                            </form>
+                        }
+                        <br />
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

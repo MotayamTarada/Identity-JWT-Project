@@ -82,12 +82,16 @@ namespace Identity_JWT_Project.Data.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
+
+
                     b.Property<string>("Email")
                         .HasColumnType("nvarchar(256)")
                         .HasMaxLength(256);
 
                     b.Property<bool>("EmailConfirmed")
                         .HasColumnType("bit");
+
+                    
 
                     b.Property<bool>("LockoutEnabled")
                         .HasColumnType("bit");

@@ -35,7 +35,8 @@ namespace Identity_JWT_Project.Areas.Identity.Pages.Account
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender 
+            )
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -79,6 +80,14 @@ namespace Identity_JWT_Project.Areas.Identity.Pages.Account
             [Display(Name = "Email")]
             public string Email { get; set; }
 
+            [Required]
+            [Display(Name = "User Name")]
+            public string UserName { get; set; }
+
+            [Required]
+            [Display(Name = "Phone Number")]
+            public string PhoneNumber { get; set; }
+
             /// <summary>
             ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
             ///     directly from your code. This API may change or be removed in future releases.
@@ -113,9 +122,19 @@ namespace Identity_JWT_Project.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = CreateUser();
+                Input.UserName = Input.UserName.Trim();
+                Input.Email = Input.Email?.Trim();
+                Input.Email = Input.Email?.Trim();
 
-                await _userStore.SetUserNameAsync(user, Input.Email, CancellationToken.None);
+
+                await _userStore.SetUserNameAsync(user, Input.UserName, CancellationToken.None);
                 await _emailStore.SetEmailAsync(user, Input.Email, CancellationToken.None);
+
+               
+                
+                    // fallback (IdentityUser has the property anyway)
+                    user.PhoneNumber = Input.PhoneNumber;
+                
                 var result = await _userManager.CreateAsync(user, Input.Password);
 
                 if (result.Succeeded)

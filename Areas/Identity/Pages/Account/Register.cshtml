@@ -1,67 +1,316 @@
-﻿@page
+﻿@* @page *@
+@* @model RegisterModel *@
+@* @{ *@
+@*     ViewData["Title"] = "Register"; *@
+@* } *@
+
+@* <h1>@ViewData["Title"]</h1> *@
+
+@* <div class="row"> *@
+@*     <div class="col-md-4"> *@
+@*         <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post"> *@
+@*             <h2>Create a new account.</h2> *@
+@*             <hr /> *@
+@*             <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div> *@
+
+
+@*             <div class="form-floating mb-3"> *@
+@*                 <input asp-for="Input.UserName" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" /> *@
+@*                 <label asp-for="Input.UserName">UserName</label> *@
+@*                 <span asp-validation-for="Input.UserName" class="text-danger"></span> *@
+@*             </div> *@
+
+@*             <div class="form-floating mb-3"> *@
+@*                 <input asp-for="Input.PhoneNumber" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" /> *@
+@*                 <label asp-for="Input.PhoneNumber">PhoneNumber</label> *@
+@*                 <span asp-validation-for="Input.PhoneNumber" class="text-danger"></span> *@
+@*             </div> *@
+
+
+
+@*             <div class="form-floating mb-3"> *@
+@*                 <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" /> *@
+@*                 <label asp-for="Input.Email">Email</label> *@
+@*                 <span asp-validation-for="Input.Email" class="text-danger"></span> *@
+@*             </div> *@
+@*             <div class="form-floating mb-3"> *@
+@*                 <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" /> *@
+@*                 <label asp-for="Input.Password">Password</label> *@
+@*                 <span asp-validation-for="Input.Password" class="text-danger"></span> *@
+@*             </div> *@
+@*             <div class="form-floating mb-3"> *@
+@*                 <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" /> *@
+@*                 <label asp-for="Input.ConfirmPassword">Confirm Password</label> *@
+@*                 <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span> *@
+@*             </div> *@
+@*             <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button> *@
+@*         </form> *@
+@*     </div> *@
+@*     <div class="col-md-6 col-md-offset-2"> *@
+@*         <section> *@
+@*             <h3>Use another service to register.</h3> *@
+@*             <hr /> *@
+@*             @{ *@
+@*                 if ((Model.ExternalLogins?.Count ?? 0) == 0) *@
+@*                 { *@
+@*                     <div> *@
+@*                         <p> *@
+@*                             There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article *@
+@*                             about setting up this ASP.NET application to support logging in via external services</a>. *@
+@*                         </p> *@
+@*                     </div> *@
+@*                 } *@
+@*                 else *@
+@*                 { *@
+@*                     <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal"> *@
+@*                         <div> *@
+@*                             <p> *@
+@*                                 @foreach (var provider in Model.ExternalLogins!) *@
+@*                                 { *@
+@*                                     <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button> *@
+@*                                 } *@
+@*                             </p> *@
+@*                         </div> *@
+@*                     </form> *@
+@*                 } *@
+@*             } *@
+@*         </section> *@
+@*     </div> *@
+@* </div> *@
+
+@* @section Scripts { *@
+@*     <partial name="_ValidationScriptsPartial" /> *@
+@* } *@
+
+
+
+@page
 @model RegisterModel
 @{
     ViewData["Title"] = "Register";
 }
 
-<h1>@ViewData["Title"]</h1>
+<style>
+    /* Light background and card glow */
+    body {
+        background: radial-gradient(1200px 600px at 80% -10%, rgba(13,110,253,.08), transparent 60%),
+                    radial-gradient(900px 500px at 10% 110%, rgba(25,135,84,.06), transparent 60%),
+                    #f8f9fa;
+    }
+    .auth-card {
+        border: 0;
+        border-radius: 1rem;
+        box-shadow: 0 10px 30px rgba(0,0,0,.08);
+        overflow: hidden;
+    }
+    .auth-header {
+        background: linear-gradient(135deg, #0d6efd 0%, #6610f2 100%);
+        color: #fff;
+    }
+    .brand-badge {
+        width: 48px; height: 48px;
+        border-radius: 12px;
+        background: rgba(255,255,255,.15);
+        display: grid; place-items: center;
+        font-weight: 700;
+        letter-spacing: .5px;
+    }
+    .form-floating > label { right: auto; left: auto; }
+    /* RTL overrides not needed in English but kept for consistency */
+    [dir="rtl"] .form-floating > label {
+        right: 0.75rem; left: auto;
+    }
+    [dir="rtl"] .input-group .input-group-text {
+        border-top-left-radius: .375rem; border-bottom-left-radius: .375rem;
+        border-top-right-radius: 0; border-bottom-right-radius: 0;
+    }
+    /* Password strength bar */
+    .pw-meter { height: 6px; border-radius: 4px; background: #e9ecef; overflow: hidden; }
+    .pw-meter > div { height: 100%; width: 0%; transition: width .25s ease; }
+    .pw-weak   { background:#dc3545; }
+    .pw-fair   { background:#fd7e14; }
+    .pw-good   { background:#ffc107; }
+    .pw-strong { background:#198754; }
+</style>
 
-<div class="row">
-    <div class="col-md-4">
-        <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post">
-            <h2>Create a new account.</h2>
-            <hr />
-            <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Email" class="form-control" autocomplete="username" aria-required="true" placeholder="name@example.com" />
-                <label asp-for="Input.Email">Email</label>
-                <span asp-validation-for="Input.Email" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.Password" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.Password">Password</label>
-                <span asp-validation-for="Input.Password" class="text-danger"></span>
-            </div>
-            <div class="form-floating mb-3">
-                <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" aria-required="true" placeholder="password" />
-                <label asp-for="Input.ConfirmPassword">Confirm Password</label>
-                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
-            </div>
-            <button id="registerSubmit" type="submit" class="w-100 btn btn-lg btn-primary">Register</button>
-        </form>
-    </div>
-    <div class="col-md-6 col-md-offset-2">
-        <section>
-            <h3>Use another service to register.</h3>
-            <hr />
-            @{
-                if ((Model.ExternalLogins?.Count ?? 0) == 0)
-                {
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-10 col-xl-8">
+            <div class="card auth-card">
+                <div class="auth-header p-4 p-md-5 d-flex align-items-center gap-3">
+                    <div class="brand-badge">RG</div>
                     <div>
-                        <p>
-                            There are no external authentication services configured. See this <a href="https://go.microsoft.com/fwlink/?LinkID=532715">article
-                            about setting up this ASP.NET application to support logging in via external services</a>.
-                        </p>
+                        <h1 class="h3 mb-1">@ViewData["Title"]</h1>
+                        <p class="mb-0 opacity-75">Create your new account in seconds</p>
                     </div>
-                }
-                else
-                {
-                    <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="form-horizontal">
-                        <div>
-                            <p>
-                                @foreach (var provider in Model.ExternalLogins!)
-                                {
-                                    <button type="submit" class="btn btn-primary" name="provider" value="@provider.Name" title="Log in using your @provider.DisplayName account">@provider.DisplayName</button>
-                                }
-                            </p>
+                </div>
+
+                <div class="card-body p-4 p-md-5">
+                    <div class="row g-5">
+                        <!-- Form -->
+                        <div class="col-md-6">
+                            <form id="registerForm" asp-route-returnUrl="@Model.ReturnUrl" method="post" novalidate>
+                                <div asp-validation-summary="ModelOnly" class="text-danger mb-3" role="alert"></div>
+
+                                <div class="mb-3 form-floating">
+                                    <input asp-for="Input.UserName" class="form-control" autocomplete="username" placeholder="Enter username" />
+                                    <label asp-for="Input.UserName">Username</label>
+                                    <span asp-validation-for="Input.UserName" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-3 input-group">
+                                    <span class="input-group-text" id="phone-addon">+</span>
+                                    <div class="form-floating flex-grow-1">
+                                        <input asp-for="Input.PhoneNumber"
+                                               class="form-control"
+                                               type="tel"
+                                               inputmode="tel"
+                                               aria-describedby="phone-addon"
+                                               autocomplete="tel"
+                                               placeholder="e.g. 059xxxxxxx" />
+                                        <label asp-for="Input.PhoneNumber">Phone number</label>
+                                    </div>
+                                </div>
+                                <span asp-validation-for="Input.PhoneNumber" class="text-danger d-block mb-3"></span>
+
+                                <div class="mb-3 form-floating">
+                                    <input asp-for="Input.Email" class="form-control" type="email" autocomplete="email" placeholder="name@example.com" />
+                                    <label asp-for="Input.Email">Email</label>
+                                    <span asp-validation-for="Input.Email" class="text-danger"></span>
+                                </div>
+
+                                <div class="mb-2 position-relative">
+                                    <div class="form-floating">
+                                        <input asp-for="Input.Password" class="form-control" autocomplete="new-password" placeholder="••••••••" id="pwd" />
+                                        <label asp-for="Input.Password">Password</label>
+                                        <button type="button" class="btn btn-outline-secondary position-absolute top-50 translate-middle-y"
+                                                style="right:.5rem" aria-label="Show/Hide"
+                                                onclick="togglePwd('pwd', this)">
+                                            Show
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="Input.Password" class="text-danger"></span>
+                                </div>
+
+                                <div class="pw-meter mb-3" aria-hidden="true">
+                                    <div id="pwBar" class="pw-weak"></div>
+                                </div>
+                                <small id="pwHint" class="text-muted d-block mb-3">Use at least 8 characters with uppercase, lowercase, numbers, and a symbol.</small>
+
+                                <div class="mb-4 position-relative">
+                                    <div class="form-floating">
+                                        <input asp-for="Input.ConfirmPassword" class="form-control" autocomplete="new-password" placeholder="••••••••" id="pwd2" />
+                                        <label asp-for="Input.ConfirmPassword">Confirm Password</label>
+                                        <button type="button" class="btn btn-outline-secondary position-absolute top-50 translate-middle-y"
+                                                style="right:.5rem" aria-label="Show/Hide"
+                                                onclick="togglePwd('pwd2', this)">
+                                            Show
+                                        </button>
+                                    </div>
+                                    <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+                                </div>
+
+                                <div class="form-check mb-4">
+                                    <input class="form-check-input" type="checkbox" value="" id="tosCheck" required />
+                                    <label class="form-check-label" for="tosCheck">
+                                        I agree to the terms and privacy policy.
+                                    </label>
+                                </div>
+
+                                <button id="registerSubmit" type="submit" class="btn btn-primary btn-lg w-100">
+                                    Register
+                                </button>
+                            </form>
                         </div>
-                    </form>
-                }
-            }
-        </section>
+
+                        <!-- External providers + notes -->
+                        <div class="col-md-6">
+                            <section>
+                                <h3 class="h5">Or register using an external service</h3>
+                                <hr />
+                                @{
+                                    if ((Model.ExternalLogins?.Count ?? 0) == 0)
+                                    {
+                                        <div class="alert alert-info" role="alert">
+                                            No external authentication services are configured. See
+                                            <a class="alert-link" href="https://go.microsoft.com/fwlink/?LinkID=532715" target="_blank" rel="noopener">
+                                                this guide on enabling external login
+                                            </a>.
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <form id="external-account" asp-page="./ExternalLogin" asp-route-returnUrl="@Model.ReturnUrl" method="post" class="d-grid gap-2">
+                                            @foreach (var provider in Model.ExternalLogins!)
+                                            {
+                                                <button type="submit"
+                                                        class="btn btn-outline-primary"
+                                                        name="provider"
+                                                        value="@provider.Name"
+                                                        title="Sign up with @provider.DisplayName">
+                                                    @provider.DisplayName
+                                                </button>
+                                            }
+                                        </form>
+                                    }
+                                }
+                                <div class="mt-4 small text-muted">
+                                    Already have an account? <a asp-page="./Login" asp-route-returnUrl="@Model.ReturnUrl">Login</a>
+                                </div>
+                            </section>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer text-center py-3">
+                    <small class="text-muted">© @DateTime.UtcNow.Year — Registration Page</small>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
+    <script>
+        // Show/Hide password
+        function togglePwd(id, btn) {
+            const input = document.getElementById(id);
+            const isPwd = input.getAttribute('type') === 'password';
+            input.setAttribute('type', isPwd ? 'text' : 'password');
+            btn.textContent = isPwd ? 'Hide' : 'Show';
+        }
+
+        // Simple password strength meter
+        const pwd = document.getElementById('pwd');
+        const bar = document.getElementById('pwBar');
+        const hint = document.getElementById('pwHint');
+
+        if (pwd && bar) {
+            pwd.addEventListener('input', function () {
+                const v = pwd.value || '';
+                const score = calcScore(v);
+                let width = '0%'; let cls = 'pw-weak'; let msg = 'Weak';
+                if (score >= 4) { width = '100%'; cls = 'pw-strong'; msg = 'Very strong'; }
+                else if (score === 3) { width = '75%'; cls = 'pw-good'; msg = 'Good'; }
+                else if (score === 2) { width = '50%'; cls = 'pw-fair'; msg = 'Fair'; }
+                else if (score === 1) { width = '25%'; cls = 'pw-weak'; msg = 'Weak'; }
+
+                bar.className = cls;
+                bar.style.width = width;
+                hint.textContent = 'Password strength: ' + msg;
+            });
+        }
+
+        function calcScore(v) {
+            let s = 0;
+            if (v.length >= 8) s++;
+            if (/[A-Z]/.test(v)) s++;
+            if (/[a-z]/.test(v)) s++;
+            if (/\d/.test(v)) s++;
+            if (/[^A-Za-z0-9]/.test(v)) s++;
+            return Math.min(s, 4); // 0..4
+        }
+    </script>
 }
+

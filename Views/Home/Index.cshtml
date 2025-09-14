@@ -2,7 +2,41 @@
     ViewData["Title"] = "Home Page";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@model IEnumerable<Identity_JWT_Project.Models.RoleVm>
+@{
+    ViewData["Title"] = "Roles";
+}
+<h2>Roles</h2>
+
+<p><a asp-action="Create" class="btn btn-primary">Create Role</a></p>
+
+@if (TempData["Success"] is string s)
+{
+     <div class="alert alert-success">@s</div>
+}
+@if (TempData["Error"] is string e)
+{
+     <div class="alert alert-danger">@e</div>
+}
+
+<table class="table">
+    <thead><tr><th>Name</th><th></th></tr></thead>
+    <tbody>
+        @foreach (var r in Model)
+        {
+            <tr>
+                <td>@r.RoleName</td>
+                <td class="text-end">
+                    <a asp-action="Edit" asp-route-id="@r.RoleId" class="btn btn-sm btn-outline-secondary">Edit</a>
+                    <form asp-action="Delete" asp-route-id="@r.RoleId" method="post" class="d-inline">
+                        @Html.AntiForgeryToken()
+                        <button type="submit" class="btn btn-sm btn-outline-danger"
+                                onclick="return confirm('Delete @r.RoleName ?')">
+                            Delete
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

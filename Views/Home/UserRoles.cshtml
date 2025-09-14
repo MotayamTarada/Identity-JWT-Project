@@ -1,0 +1,43 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@{
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Name</th>
+            <th>PhoneNumber </th>
+            <th>Roles</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <th>@item.User.Email</th>
+                <th>@item.User.UserName</th>
+                <th>@item.User.PhoneNumber</th>
+                <th>
+                    @foreach (var role in ViewBag.Roles)
+                    {
+                        @if (item.UserRoles.Contains(role.ToString()))
+                        {
+
+                            <a class="btn btn-primary" href=" "> @role</a>
+
+                        }
+                        else
+                        {
+                            
+                        <a class=" btn btn-outline-primary" href="AddRoleToUser/@item.User.Id/@role"> @role</a>
+                        }
+                    }
+                </th>
+                   
+            </tr>
+        }
+    </tbody>
+</table>
