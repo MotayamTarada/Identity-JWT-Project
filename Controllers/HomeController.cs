@@ -23,6 +23,8 @@ public class HomeController : Controller
 
     // GET: /Roles
     [HttpGet]
+    [Authorize]
+
     public IActionResult Index()
     {
         var roles = _roleManager.Roles
@@ -33,10 +35,13 @@ public class HomeController : Controller
 
     // GET: /Roles/Create
     [HttpGet]
+    [Authorize(Roles = "Admin")]
+
     public IActionResult Create() => View(new RoleVm());
 
     // POST: /Roles/Create
     [HttpPost]
+    [Authorize(Roles = "Admin")] 
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Create(RoleVm model)
     {
@@ -62,6 +67,8 @@ public class HomeController : Controller
 
     // GET: /Roles/Edit/{id}
     [HttpGet]
+    [Authorize(Roles = "Admin")]
+
     public async Task<IActionResult> Edit(string id)
     {
         var role = await _roleManager.FindByIdAsync(id);
@@ -72,6 +79,8 @@ public class HomeController : Controller
 
     // POST: /Roles/Edit/{id}
     [HttpPost]
+    [Authorize(Roles = "Admin")]
+
     [ValidateAntiForgeryToken]
     public async Task<IActionResult> Edit(RoleVm model)
     {
@@ -95,6 +104,8 @@ public class HomeController : Controller
     // POST: /Roles/Delete/{id}
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
+
     public async Task<IActionResult> Delete(string id)
     {
         var role = await _roleManager.FindByIdAsync(id);
@@ -119,6 +130,8 @@ public class HomeController : Controller
     // POST: /Roles/AddRoleToUser
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
+
     public async Task<IActionResult> AddRoleToUser(string userId, string roleName)
     {
         if (string.IsNullOrWhiteSpace(userId) || string.IsNullOrWhiteSpace(roleName))
@@ -141,6 +154,8 @@ public class HomeController : Controller
     // POST: /Roles/RemoveRoleFromUser
     [HttpPost]
     [ValidateAntiForgeryToken]
+    [Authorize(Roles = "Admin")]
+
     public async Task<IActionResult> RemoveRoleFromUser(string userId, string roleName)
     {
         var user = await _userManager.FindByIdAsync(userId);
@@ -156,6 +171,8 @@ public class HomeController : Controller
 
     // GET: /Roles/UsersWithRoles
     [HttpGet]
+    [Authorize(Roles = "Admin")]
+
     public async Task<IActionResult> UsersWithRoles()
     {
         var users = _userManager.Users.ToList();
