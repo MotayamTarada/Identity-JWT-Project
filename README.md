@@ -51,9 +51,4 @@ It also includes a unique **QR-based short-lived viewer** feature that allows te
 
 ---
 
-## 🔧 Setup
 
-1. Clone the repo:
-   ```bash
-   git clone https://github.com/YourUserName/Identity_JWT_Project.git
-   cd Identity_JWT_Project
