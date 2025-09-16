@@ -48,7 +48,7 @@ It also includes a unique **QR-based short-lived viewer** feature that allows te
 
 ---
 ## Login  Seed data : 
-**User Name : Admin
-**Pass : Admin123!
+**User Name : Admin**
+**Pass : Admin123!**
 
 
