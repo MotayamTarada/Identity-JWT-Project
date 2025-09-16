@@ -37,9 +37,6 @@ It also includes a unique **QR-based short-lived viewer** feature that allows te
 
 ---
 
-
-
-
 ## ⚡ Tech Stack
 - **ASP.NET Core  8**
 - **Entity Framework Core**
@@ -50,5 +47,8 @@ It also includes a unique **QR-based short-lived viewer** feature that allows te
 - **QR Code Generator**
 
 ---
+## Login  Seed data : 
+** User Name : Admin
+** Pass : Admin123!
 
 
